@@ -1,0 +1,73 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+    char matrix[5][5] = {
+        {'M','F','H','I','K'},
+        {'U','N','O','P','Q'},
+        {'Z','V','W','X','Y'},
+        {'E','L','A','R','G'},
+        {'D','S','T','B','C'}
+    };
+
+    char text[200] = "Must see you over Cadogan West. Coming at once.";
+    char msg[200];
+    int i, j, k = 0;
+
+    // Remove spaces and special characters
+    for (i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            char ch = toupper(text[i]);
+            if (ch == 'J') ch = 'I';
+            msg[k++] = ch;
+        }
+    }
+    msg[k] = '\0';
+
+    printf("Plaintext: %s\n", text);
+    printf("Encrypted text: ");
+
+    // Encrypt letter pairs
+    for (i = 0; i < k; i += 2) {
+        char a = msg[i];
+        char b = (i + 1 < k) ? msg[i + 1] : 'X';
+
+        if (a == b) {
+            b = 'X';
+            i--;
+        }
+
+        int r1, c1, r2, c2;
+
+        for (j = 0; j < 25; j++) {
+            if (matrix[j / 5][j % 5] == a) {
+                r1 = j / 5;
+                c1 = j % 5;
+            }
+            if (matrix[j / 5][j % 5] == b) {
+                r2 = j / 5;
+                c2 = j % 5;
+            }
+        }
+
+        if (r1 == r2) {
+            printf("%c%c",
+                matrix[r1][(c1 + 1) % 5],
+                matrix[r2][(c2 + 1) % 5]);
+        }
+        else if (c1 == c2) {
+            printf("%c%c",
+                matrix[(r1 + 1) % 5][c1],
+                matrix[(r2 + 1) % 5][c2]);
+        }
+        else {
+            printf("%c%c",
+                matrix[r1][c2],
+                matrix[r2][c1]);
+        }
+    }
+
+    return 0;
+}
